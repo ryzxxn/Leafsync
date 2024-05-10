@@ -85,7 +85,7 @@ export default function Connect() {
           </div>
 
           <div>
-            <button className="btn btn-primary" onClick={handleConnection}>Connect</button>
+            <button className="connect_button" onClick={handleConnection}>Connect</button>
           </div>
         </div>
       </div>

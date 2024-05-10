@@ -3,6 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "main": "main.js",
+  "icon": "logo.ico",
+  "windows": {
+    "icon": "path/to/your/windows/icon.ico"
+  },
   "scripts": {
     "electron": "electron .",
     "api": "nodemon server.js",

@@ -18,7 +18,7 @@ function createWindows() {
     width: 1280,
     minHeight: 720,
     minWidth: 1280,
-    // autoHideMenuBar: true,
+    autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: true,
       preload: path.join(__dirname, 'server.js'),
@@ -28,7 +28,7 @@ function createWindows() {
     show: false,
   });
   mainWindow.loadFile(path.join(__dirname, 'dist', 'index.html'));
-  mainWindow.loadURL('http://localhost:5173/')
+  // mainWindow.loadURL('http://localhost:5173/')
   mainWindow.on('ready-to-show', () => mainWindow.show());
 }
 
