@@ -101,6 +101,7 @@ export default function TC({ tableName }: TCProps) {
         <button className="pagnition_button" onClick={handleToggleMinimize}>
         <FiMinimize2 />
         </button>
+        <p>{tableData.length}</p>
       </div>
       {!isMinimized && (
         <div className="scroll" style={{ overflowY: "scroll", height: "auto" }}>

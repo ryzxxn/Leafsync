@@ -55,28 +55,33 @@ export default function Connect() {
 
   return (
     <>
-      <div className="p-5 h-100 w-100 justify-content-center d-flex">
+      <div style={{height: '100vh', display: 'flex', flexDirection: 'column'}}>
+
+        <div style={{display: 'flex', alignItems: 'center'}}>
+          <img src="./leafsync.svg" alt="" style={{height: '3rem'}}></img>
+          <p style={{color: 'white'}}>LeafSync</p>
+        </div>
         
-        <div style={{ color: 'white' }} className=" p-4 d-flex flex-column w-100 justify-content-center align-items-center gap-4  bg-dark rounded ">
-          <label className="h1 m-4">Connect to your Database</label>
+        <div style={{ color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%', alignItems: 'center', flex: '1', gap: '2rem'}} >
+          <label style={{fontSize: '2rem'}}>Connect Database</label>
           <div>
-            <p className="input_title">Host</p>
-            <input className="input_field" onChange={(e) => setHost(e.target.value)} />
+            {/* <p className="input_title">Host</p> */}
+            <input placeholder="Host" className="input_field" onChange={(e) => setHost(e.target.value)} />
           </div>
 
           <div>
-            <p className="input_title">Username</p>
-            <input className="input_field" onChange={(e) => setUsername(e.target.value)}></input>
+            {/* <p className="input_title">Username</p> */}
+            <input placeholder="Username" className="input_field" onChange={(e) => setUsername(e.target.value)}></input>
           </div>
 
           <div>
-            <p className="input_title">Password</p>
-            <input className="input_field" onChange={(e) => setPassword(e.target.value)}></input>
+            {/* <p className="input_title">Password</p> */}
+            <input placeholder="Password" className="input_field" onChange={(e) => setPassword(e.target.value)}></input>
           </div>
 
           <div>
-            <p className="input_title">Database</p>
-            <input className="input_field" onChange={(e) => setDatabase(e.target.value)}></input>
+            {/* <p className="input_title">Database</p> */}
+            <input placeholder="Database" className="input_field" onChange={(e) => setDatabase(e.target.value)}></input>
           </div>
 
           <div>

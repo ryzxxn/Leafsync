@@ -25,7 +25,7 @@ export default function Home() {
             <p style={{ fontSize: '2rem', color: 'white', fontFamily: 'sans-serif' }}>LEAFSYNC</p>
           </div>
           <div style={{ color: 'white' }}>
-            <p style={{ margin: '0rem 2rem' }} className='hero_desc'>Built For performance, Security and Developers</p>
+            <p style={{ margin: '0rem 2rem' }} className='hero_desc'>Built For performance, Security and SQL</p>
           </div>
         </div>
 

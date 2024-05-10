@@ -115,7 +115,7 @@ export default function Dashboard() {
             <h4 className="host">
               Connection: {sessionStorage.getItem("current_username") + "@" + sessionStorage.getItem("current_host")}
             </h4>
-            <button onClick={logout} style={{color: 'white', backgroundColor: 'transparent', border: '.1rem solid white'}}>Disconnect</button>
+            <button onClick={logout} style={{color: 'white', backgroundColor: 'transparent', border: '.1rem solid rgb(61, 168, 255)'}}>Disconnect</button>
           </div>
         </div>
         <div className="dashboard_view" style={{ display: "flex"}}>

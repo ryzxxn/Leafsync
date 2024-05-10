@@ -38,6 +38,7 @@ p{
   display: flex;
   gap: 1rem;
   color: white;
+  justify-content: space-between;
 }
 
 .dashboard_left{
@@ -159,4 +160,5 @@ th{
   border-bottom: 1px solid rgba(255, 255, 255, 0.329);
   color: white;
   font-family: monospace;
+  width: 20rem;
 }
