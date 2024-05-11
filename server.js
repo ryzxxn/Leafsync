@@ -132,54 +132,52 @@ app.post('/TableData', (req, res) => {
             res.status(200).send(results);
         });
     });
-    // connection.end();
 });
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
 app.post('/Query', (req, res) => {
     const { host, username, password, database, query } = req.body;
-
+  
     const connection = mysql.createConnection({
-        host: host,
-        user: username,
-        password: password,
-        database: database
+      host: host,
+      user: username,
+      password: password,
+      database: database
     });
-
+  
     connection.connect((err) => {
+      if (err) {
+        console.error('Failed to connect to the database:', err);
+        res.status(500).send('Failed to connect to the database.');
+        return;
+      }
+  
+      // RUN QUERY
+      connection.query(query, (err, results, fields) => {
         if (err) {
-            console.error('Failed to connect to the database:', err);
-            res.status(500).send('Failed to connect to the database.');
-            return;
+          console.error('Failed to execute query:', err);
+          res.status(400).send(err.sqlMessage);
+          return;
         }
-
-        // RUN QUERY
-        connection.query(query, (err, results, fields) => {
-            if (err) {
-                console.error('Failed to execute query:', err);
-                res.status(500).send(err);
-                return;
-            }
-
-            const DATA = {
-                results,
-                fields
-            }
-
-            // Send the table data as a response
-            res.status(200).send(DATA);
-        });
-
-        // Close the connection
-        connection.end((err) => {
-            if (err) {
-                console.error('Failed to close the connection:', err);
-                return;
-            }
-            console.log('Connection closed');
-        });
+  
+        const DATA = {
+          results,
+          fields
+        }
+  
+        // Send the table data as a response with a status code of 200
+        res.status(200).send(DATA);
+      });
+  
+      // Close the connection
+      connection.end((err) => {
+        if (err) {
+          res.status(400).send(err)
+          return;
+        }
+      });
     });
-});
+  });  
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
 app.post('/Fields', (req, res) => {

@@ -51,7 +51,6 @@ p{
 
 .dashboard_right{
   overflow-y: hidden;
-  /* background-color: pink; */
   display: flex;
   flex-direction: column;
 }
@@ -78,7 +77,6 @@ p{
   scrollbar-width: thin;
   overflow-y: auto;
   width: 100%;
-  /* scrollbar-gutter: stable; */
 }
 
 table{

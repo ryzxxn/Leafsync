@@ -8,6 +8,8 @@ type Row = {
 type ApiResponse = {
   results?: Row[] | { fieldCount: number };
   fields?: { name: string }[];
+  data?: string;
+  status?: number;
 };
 
 type FieldData = {
@@ -20,6 +22,7 @@ export default function QB() {
   const [fields, setFields] = useState<string[]>([]);
   const [query, setQuery] = useState("");
   const [fieldData, setFieldData] = useState<FieldData[]>([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const QueryData = {
     host: sessionStorage.getItem("current_host"),
@@ -30,18 +33,20 @@ export default function QB() {
   };
 
   const handleQuery = async () => {
-    try {
       const response: AxiosResponse<ApiResponse> = await axios.post("http://localhost:5000/Query", QueryData);
-  
-      if (response.data) {
-        setData(response.data.results as Row[] | { fieldCount: number });
+
+      if (response.data.status === 400 && response.data.status) {
+        console.log(response.data.status);
+        
+        // If the status is 500, display the error message from response.data
+        setErrorMessage(JSON.stringify(response.data.data)); // Convert the response data to a string
+      } else if (response.data.results) {
+        // If the query was successful and there are results, update the component's state
+        setData(response.data.results);
         setFields(response.data.fields?.map((field) => field.name) ?? []);
-      } else {
         console.log("SQL ran successfully");
+        setErrorMessage(""); // Clear the error message
       }
-    } catch (error) {
-      console.error("Error executing query:", error);
-    }
   };
   
 
@@ -104,38 +109,43 @@ export default function QB() {
       </div>
 
       <div style={{overflowY: 'scroll', width: '100%', padding: '1rem 0rem'}} className="scroll">
-      {fields.length > 0 && (
-      <>
-        <h3 style={{color: 'white'}}>Result</h3>
-        <table style={{ tableLayout: "fixed", width: "100%", height: "100%" }}>
-          <thead>
-            <tr>
-              {fields.map((fieldName, index) => (
-                <th key={index} style={{ overflowWrap: "break-word", wordWrap: "break-word", hyphens: "auto" }}>
-                  {fieldName}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {Array.isArray(data) && data.map((row, index) => (
-              <tr key={index}>
-                {fields.map((fieldName, index) => (
-                  <td
-                    key={index}
-                    style={{ overflowWrap: "break-word", wordWrap: "break-word", hyphens: "auto" }}
-                    onDoubleClick={handleDoubleClick}
-                  >
-                    {row[fieldName]}
-                  </td>
+        {errorMessage && ( // Conditionally render the error message div
+          <div style={{ color: 'red' }}>
+            {errorMessage}
+          </div>
+        )}
+        {!errorMessage && fields.length > 0 && ( // Conditionally render the table with data and fields
+          <>
+            <h3 style={{color: 'white'}}>Result</h3>
+            <table style={{ tableLayout: "fixed", width: "100%", height: "100%" }}>
+              <thead>
+                <tr>
+                  {fields.map((fieldName, index) => (
+                    <th key={index} style={{ overflowWrap: "break-word", wordWrap: "break-word", hyphens: "auto" }}>
+                      {fieldName}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {Array.isArray(data) && data.map((row, index) => (
+                  <tr key={index}>
+                    {fields.map((fieldName, index) => (
+                      <td
+                        key={index}
+                        style={{ overflowWrap: "break-word", wordWrap: "break-word", hyphens: "auto" }}
+                        onDoubleClick={handleDoubleClick}
+                      >
+                        {row[fieldName]}
+                      </td>
+                    ))}
+                  </tr>
                 ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {!Array.isArray(data) && <p>Query executed successfully</p>}
-        </>
-      )}
+              </tbody>
+            </table>
+            {!Array.isArray(data) && <p>Query executed successfully</p>}
+          </>
+        )}
       </div>
     </>
   );
