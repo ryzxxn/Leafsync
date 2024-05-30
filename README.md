@@ -1,6 +1,6 @@
 # LeafSync
 
-LeafSync is a project that provides a synchronization solution. This README file will guide you through the project structure and provide instructions on how to install and run the project.
+LeafSync is a project that provides a synchronized solution to managing and auditing databases. This README file will guide you through the project structure and provide instructions on how to install and run the project.
 
 ## Table of Contents
 
