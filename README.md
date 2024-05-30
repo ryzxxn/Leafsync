@@ -53,5 +53,5 @@ electron-packager . --out=build --exec=my-app --overwrite
 ```
 main.js contains config to build the app
 
-##Download
+## Download
 [V-0.1.30 LeafSync Download](https://github.com/ryzxxn/Leafsync/releases/download/stable/app-win32-x64.rar)
