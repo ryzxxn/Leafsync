@@ -70,7 +70,7 @@ app.post('/getdbtables', (req, res) => {
 
 // Define a route handler for getting all data from a specific table in the database
 app.post('/gettabledata', (req, res) => {
-  const { connectionURI, hostname, password, username, database_name, dialect, port, tableName } = req.body;
+  const { connectionURI, hostname, password, username, database_name, dialect, port, table_name } = req.body;
   const sequelize = createSequelizeInstance(connectionURI, hostname, password, username, database_name, dialect, port);
 
   // Test the connection
@@ -78,16 +78,16 @@ app.post('/gettabledata', (req, res) => {
     .then(() => {
       console.log('Connection has been established successfully.');
       // Get all data from the specified table
-      return sequelize.query(`SELECT * FROM ${tableName}`, {
+      return sequelize.query(`SELECT * FROM ${table_name}`, {
         type: sequelize.QueryTypes.SELECT
       });
     })
     .then(data => {
-      console.log(`Data from table ${tableName}:`, data);
+      console.log(`Data from table ${table_name}:`, data);
       res.json(data);
     })
     .catch(err => {
-      console.error(`Unable to get data from table ${tableName}:`, err);
+      console.error(`Unable to get data from table ${table_name}:`, err);
       res.sendStatus(500);
     });
 });
