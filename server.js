@@ -13,10 +13,10 @@ function createSequelizeInstance(connectionURI, database_name, username, passwor
   if (connectionURI) {
     return new Sequelize(connectionURI);
   } else {
-    return new Sequelize(database_name, username, password, {
-      host: hostname,
-      dialect,
-      port
+    return new Sequelize(database_name ?? '', username ?? '', password ?? '', {
+      host: hostname ?? 'localhost',
+      dialect: dialect ?? 'mysql',
+      port: port ?? 3306,
     });
   }
 }
@@ -41,9 +41,9 @@ app.post('/connect', (req, res) => {
 
 
 // Define a route handler for getting all tables in the database
-app.post('/getdbtables', (req, res) => {
-  const { hostname, password, username, database_name, dialect, port } = req.body;
-  const sequelize = createSequelizeInstance(database_name, username, password, hostname, dialect, port);
+app.post('/gettable', (req, res) => {
+  const { hostname, password, username, database_name, dialect, port, connectionURI } = req.body;
+  const sequelize = createSequelizeInstance(connectionURI, database_name, username, password, hostname, dialect, port);
 
   // Test the connection
   sequelize.authenticate()
