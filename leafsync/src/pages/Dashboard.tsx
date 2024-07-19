@@ -1,5 +1,6 @@
 import Navbar from "../Components/Navbar";
-import TableList from "../Views/TableList";
+import Table from "../Views/table";
+import TableList from "../Components/TableList";
 
 export default function Dashboard() {
   return (
@@ -8,13 +9,13 @@ export default function Dashboard() {
       <div>
         <Navbar/>
       </div>
-      <div  className="h-screen flex">
+      <div  className="max-h-[calc(100vh-80px)] flex">
         <div className="bg-[rgb(20,20,20)] h-full flex-0">
           <TableList/>
         </div>
 
-        <div className="h-full flex-1">
-
+        <div className="max-h-[calc(100vh-80px)] flex-1 w-full">
+          <Table/>
         </div>
       </div>
     </div>
