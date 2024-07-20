@@ -31,7 +31,7 @@ export default function TableList() {
   }
 
   return (
-    <div className="min-w-[8rem] flex flex-col text-white">
+    <div className="min-w-[8rem] flex flex-col text-white bg-transparent">
         <p className="flex flex-row-reverse text-[.8rem] justify-end items-center w-full gap-1" style={{border: '1px solid rgb(255,255,255,0.200)'}}>TABLE<CiViewTable /></p>
         <div>
             {tables.map((table, index) => (

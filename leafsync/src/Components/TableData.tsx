@@ -41,33 +41,37 @@ export default function TableData() {
 
   return (
     <>
-      <div className="scroll" style={{ overflowY: "scroll", height: "auto" }}>
-  <table style={{ tableLayout: "fixed", width: "100%", height: "100%" }}>
-    <thead>
-      <tr>
-        {headers.map((header, index) => (
-          <th key={index} style={{ overflowWrap: "break-word", wordWrap: "break-word", hyphens: "auto" }}>
-            {header}
-          </th>
-        ))}
-      </tr>
-    </thead>
-    <tbody>
-      {data.map((row, index) => (
-        <tr key={index}>
-          {headers.map((header, index) => (
-            <td
-              key={index}
-              style={{ overflowWrap: "break-word", wordWrap: "break-word", hyphens: "auto" }}
-            >
-              {row[header]}
-            </td>
-          ))}
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
+      <table className='font-mono text-[.7rem]' style={{ tableLayout: "fixed", width: 'calc(100vw-128px)'}}>
+        <tbody>
+          <tr className='sticky top-0'>
+            {headers.map((header, index) => (
+              <th key={index} style={{ overflowWrap: "break-word", wordWrap: "break-word", hyphens: "auto" }}>
+                {header}
+              </th>
+            ))}
+          </tr>
+            {data.map((row, index) => (
+              <tr key={index}>
+                {headers.map((header, index) => (
+                  <td
+                    key={index}
+                    style={{
+                      overflowWrap: "break-word",
+                      wordWrap: "break-word",
+                      hyphens: "auto",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                    }}
+                    className='font-mono'
+                  >
+                    {row[header]}
+                  </td>
+                ))}
+              </tr>
+            ))}
+        </tbody>
+      </table>
     </>
   );
 }

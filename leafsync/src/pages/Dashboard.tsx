@@ -6,15 +6,15 @@ export default function Dashboard() {
   return (
     <>
     <div className="h-screen bg-[rgb(42,42,42)]">
-      <div>
+      <div className="flex flex-col w-full">
         <Navbar/>
       </div>
-      <div  className="max-h-[calc(100vh-80px)] flex">
-        <div className="bg-[rgb(20,20,20)] h-full flex-0">
+      <div  className="flex max-h-[calc(100vh-80px)]">
+        <div className="h-full flex-0">
           <TableList/>
         </div>
 
-        <div className="max-h-[calc(100vh-80px)] flex-1 w-full">
+        <div className="flex-1 max-h-[calc(100vh-80px)]">
           <Table/>
         </div>
       </div>

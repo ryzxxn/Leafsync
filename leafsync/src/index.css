@@ -1,3 +1,47 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body{
+    scrollbar-color: white transparent;
+    scrollbar-width: thin;
+    overflow-y: auto;
+    width: 100%;
+}
+
+table{
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+    flex: 1;
+  }
+  
+  th, td, tr{
+    font-family: monospace;
+    word-break: break-all;
+  }
+  
+  td{
+    height: auto;
+    max-height: 4rem;
+    color: white;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  
+  th, td{
+    border: 1px solid #333333;
+    color: white;
+  }
+  
+  th{
+    text-align: left;
+    background-color: rgb(34, 34, 34);
+    height: auto;
+    max-height: 4rem;
+    color: white;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
