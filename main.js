@@ -13,11 +13,11 @@ function createWindow() {
     },
   });
 
-mainWindow.webContents.on('before-input-event', (event, input) => {
-if (input.key === 'F5' || (input.control && input.key === 'r') || (input.meta && input.key === 'r')) {
-    event.preventDefault(); // Prevent reload
-}
-});
+// mainWindow.webContents.on('before-input-event', (event, input) => {
+// if (input.key === 'F5' || (input.control && input.key === 'r') || (input.meta && input.key === 'r')) {
+//     event.preventDefault(); // Prevent reload
+// }
+// });
 
 //   uncomment on production
 //   mainWindow.loadFile(path.join(__dirname, '/leafsync/index.html'));

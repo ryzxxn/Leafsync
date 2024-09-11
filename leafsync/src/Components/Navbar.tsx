@@ -5,7 +5,7 @@ export default function Navbar() {
     <>
     <div className="flex justify-between p-1 items-center border-b-[1px] border-[rgb(230,230,230)]">
         <div>
-            <div className="flex items-center">
+            <div className="flex items-center gap-1">
                 <FaLeaf />
                 <p className="font-mono font-extrabold">Leafsync</p>
             </div>
