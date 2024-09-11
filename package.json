@@ -1,10 +1,11 @@
 {
   "name": "leafsync",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "nodemon server.js"
+    "server": "nodemon main.js",
+    "start": "electron ."
   },
   "keywords": [],
   "author": "",
@@ -19,5 +20,8 @@
     "pg": "^8.12.0",
     "sequelize": "^6.37.3",
     "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "electron": "^32.0.2"
   }
 }
