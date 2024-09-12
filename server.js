@@ -14,13 +14,8 @@ app.use(bodyParser.json());
 function createSequelizeInstance(connectionURI, database_name, username, password, hostname, dialect, port) {
   if (connectionURI) {
     return new Sequelize(connectionURI,{
-      dialectOptions: {
-        ssl: {
-          require: false, // Enforces SSL connection
-          rejectUnauthorized: false, // Set to false for Supabase since it uses self-signed certificates
-        },
-      },
-    });
+      ssl: { rejectUnauthorized: false}
+  });
   } else {
     return new Sequelize(database_name ?? '', username ?? '', password ?? '', {
       host: hostname ?? 'localhost',

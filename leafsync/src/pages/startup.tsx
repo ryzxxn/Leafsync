@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../components/navbar";
 import axios from "axios";
 import memoryState from "memory-state";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
+import { useNavigate } from "react-router-dom";
 
 export default function Startup() {
   const [useConnectionString, setUseConnectionString] = useState(false);
@@ -17,7 +17,26 @@ export default function Startup() {
   });
   const [connectionStatus, setConnectionStatus] = useState("");
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (useConnectionString) {
+      setFormData((prev) => ({
+        ...prev,
+        hostname: "",
+        username: "",
+        password: "",
+        database_name: "",
+        port: "",
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        connectionURI: "",
+        port: "",
+      }));
+    }
+  }, [useConnectionString]);
 
   // Handle input change
   const handleInputChange = (e:any) => {
@@ -35,6 +54,8 @@ export default function Startup() {
       if (response.status === 200) {
         // Update memoryState upon successful connection
         memoryState.setState('Connection_credentials', {
+          connectionURI: formData.connectionURI,
+          dialect: formData.dialect,
           hostname: formData.hostname,
           username: formData.username,
           password: formData.password,
@@ -91,6 +112,7 @@ export default function Startup() {
                     placeholder="Connection String"
                     className="outline-none border-b-[1px] text-[.8rem] w-full font-mono p-1 "
                     onChange={handleInputChange}
+                    value={formData.connectionURI}
                   />
                 </div>
                 <div>
@@ -99,6 +121,7 @@ export default function Startup() {
                     placeholder="Port"
                     className="outline-none border-b-[1px] text-[.8rem] w-full font-mono p-1 "
                     onChange={handleInputChange}
+                    value={formData.port}
                   />
                 </div>
               </div>
@@ -123,6 +146,7 @@ export default function Startup() {
                       placeholder="Hostname"
                       className="outline-none border-b-[1px] text-[.8rem] w-full font-mono p-1"
                       onChange={handleInputChange}
+                      value={formData.hostname}
                     />
                   </div>
                   <div>
@@ -131,6 +155,7 @@ export default function Startup() {
                       placeholder="Username"
                       className="outline-none border-b-[1px] text-[.8rem] w-full font-mono p-1"
                       onChange={handleInputChange}
+                      value={formData.username}
                     />
                   </div>
                   <div>
@@ -139,6 +164,7 @@ export default function Startup() {
                       placeholder="Password"
                       className="outline-none border-b-[1px] text-[.8rem] w-full font-mono p-1"
                       onChange={handleInputChange}
+                      value={formData.password}
                     />
                   </div>
                   <div>
@@ -147,6 +173,7 @@ export default function Startup() {
                       placeholder="Database"
                       className="outline-none border-b-[1px] text-[.8rem] w-full font-mono p-1"
                       onChange={handleInputChange}
+                      value={formData.database_name}
                     />
                   </div>
                   <div>
@@ -155,6 +182,7 @@ export default function Startup() {
                       placeholder="Port"
                       className="outline-none border-b-[1px] text-[.8rem] w-full font-mono p-1"
                       onChange={handleInputChange}
+                      value={formData.port}
                     />
                   </div>
                 </div>
