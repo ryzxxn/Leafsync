@@ -8,14 +8,16 @@ const port = 6767;
 app.use(cors());
 app.use(bodyParser.json());
 
+let sequelizeInstance = null;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Create a function to create a new Sequelize instance
 function createSequelizeInstance(connectionURI, database_name, username, password, hostname, dialect, port) {
   if (connectionURI) {
-    return new Sequelize(connectionURI,{
-      ssl: { rejectUnauthorized: false}
-  });
+    return new Sequelize(connectionURI, {
+      ssl: { rejectUnauthorized: false }
+    });
   } else {
     return new Sequelize(database_name ?? '', username ?? '', password ?? '', {
       host: hostname ?? 'localhost',
@@ -24,15 +26,16 @@ function createSequelizeInstance(connectionURI, database_name, username, passwor
     });
   }
 }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Define a route handler for testing the database connection
 app.post('/connect', (req, res) => {
   const { connectionURI, hostname, password, username, database_name, dialect, port } = req.body;
-  const sequelize = createSequelizeInstance(connectionURI, database_name, username, password, hostname, dialect, port);
+  sequelizeInstance = createSequelizeInstance(connectionURI, database_name, username, password, hostname, dialect, port);
 
   // Test the connection
-  sequelize.authenticate()
+  sequelizeInstance.authenticate()
     .then(() => {
       console.log('Connection has been established successfully.');
       res.sendStatus(200);
@@ -47,26 +50,24 @@ app.post('/connect', (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Define a route handler for getting all tables in the database
 app.post('/gettable', (req, res) => {
-  const { hostname, password, username, database_name, dialect, port, connectionURI } = req.body;
-  const sequelize = createSequelizeInstance(connectionURI, database_name, username, password, hostname, dialect, port);
+  if (!sequelizeInstance) {
+    return res.status(400).send('Database connection not established.');
+  }
 
-  // Test the connection
-  sequelize.authenticate()
-    .then(() => {
-      console.log('Connection has been established successfully.');
-      let query;
-      if (dialect === 'postgres') {
-        query = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'";
-      } else if (dialect === 'mysql') {
-        query = "SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE()";
-      } else {
-        throw new Error(`Unsupported dialect: ${dialect}`);
-      }
-      // Get all tables in the database
-      return sequelize.query(query, {
-        type: sequelize.QueryTypes.SELECT
-      });
-    })
+  let query;
+  const { dialect } = req.body;
+  if (dialect === 'postgres') {
+    query = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'";
+  } else if (dialect === 'mysql') {
+    query = "SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE()";
+  } else {
+    return res.status(400).send(`Unsupported dialect: ${dialect}`);
+  }
+
+  // Get all tables in the database
+  sequelizeInstance.query(query, {
+    type: sequelizeInstance.QueryTypes.SELECT
+  })
     .then(tables => {
       console.log('Tables in the database:', tables);
       res.json(tables);
@@ -81,18 +82,16 @@ app.post('/gettable', (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Define a route handler for getting all data from a specific table in the database
 app.post('/gettabledata', (req, res) => {
-  const { connectionURI, hostname, password, username, database_name, dialect, port, table_name } = req.body;
-  const sequelize = createSequelizeInstance(connectionURI, hostname, password, username, database_name, dialect, port);
+  if (!sequelizeInstance) {
+    return res.status(400).send('Database connection not established.');
+  }
 
-  // Test the connection
-  sequelize.authenticate()
-    .then(() => {
-      console.log('Connection has been established successfully.');
-      // Get all data from the specified table
-      return sequelize.query(`SELECT * FROM ${table_name}`, {
-        type: sequelize.QueryTypes.SELECT
-      });
-    })
+  const { table_name } = req.body;
+
+  // Get all data from the specified table
+  sequelizeInstance.query(`SELECT * FROM ${table_name}`, {
+    type: sequelizeInstance.QueryTypes.SELECT
+  })
     .then(data => {
       console.log(`Data from table ${table_name}:`, data);
       res.json(data);
@@ -102,9 +101,6 @@ app.post('/gettabledata', (req, res) => {
       res.sendStatus(500);
     });
 });
-
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
