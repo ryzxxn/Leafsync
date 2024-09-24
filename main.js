@@ -21,7 +21,7 @@ function createWindow() {
 
 //   uncomment on production
 //   mainWindow.loadFile(path.join(__dirname, '/leafsync/index.html'));
-  mainWindow.loadURL('http://localhost:5173/');
+  mainWindow.loadURL('http://localhost:3000');
   mainWindow.webContents.openDevTools();
 }
 
