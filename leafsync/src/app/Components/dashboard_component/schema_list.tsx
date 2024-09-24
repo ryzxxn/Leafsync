@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { PiDatabaseThin } from "react-icons/pi";
 import { IoIosArrowDown } from "react-icons/io";
+import memoryState from 'memory-state'; // Import the MemoryState library
 
 // Utility function to truncate strings
 const truncateString = (str: string, maxLength: number) => {
@@ -41,13 +42,18 @@ export default function Schema_list() {
     });
   };
 
+  const handleSchemaClick = (schemaName: string) => {
+    memoryState.setState('selectedSchema', { name: schemaName });
+    console.log(memoryState.getState('selectedSchema')); // Log the stored schema name
+  };
+
   return (
     <>
-      <div className='w-full flex gap-4 p-4 flex-wrap'>
+      <div className='w-full flex gap-4 p-4 flex-wrap h-[max-content]'>
         {schemas.map((schema, index) => (
-          <div className='flex-col border-[1px] p-2 rounded-md flex items-start min-w-[15rem] max-w-[15rem] flex-1 h-[max-content] fade' key={index}>
+          <div className='flex-col border-[1px] p-2 rounded-md flex items-start min-w-[15rem] max-w-[15rem] flex-1 h-[max-content] fade' onClick={() => handleSchemaClick(schema.schema_name)} key={index}>
             <div className='flex justify-between w-full'>
-              <p className='text-[1.1rem] font-bold whitespace-nowrap flex items-center gap-1'>
+              <p className='text-[1.1rem] font-bold whitespace-nowrap flex items-center gap-1 cursor-pointer'>
                 <PiDatabaseThin />
                 {truncateString(schema.schema_name, 15)} {/* Truncate schema name to 15 characters */}
               </p>

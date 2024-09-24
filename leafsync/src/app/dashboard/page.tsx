@@ -1,16 +1,25 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TableList from '../Components/dashboard_component/table_list';
 import { CiViewTable } from "react-icons/ci";
 import { FaCode } from "react-icons/fa6";
 import { PiDatabaseThin } from "react-icons/pi";
+import { SiMaterialdesignicons } from "react-icons/si";
 import Schema_list from '../Components/dashboard_component/schema_list';
-// Import other components you plan to add in the future
-// import AnotherComponent from '../Components/dashboard_component/another_component';
-// import YetAnotherComponent from '../Components/dashboard_component/yet_another_component';
+import Schema_render from '../Components/dashboard_component/schema_render';
+import memoryState from 'memory-state'; // Import the MemoryState library
 
 export default function Page() {
   const [selectedComponent, setSelectedComponent] = useState<string>('database');
+  const [selectedSchema, setSelectedSchema] = useState<string>('');
+
+  useEffect(() => {
+    // Retrieve the selected schema name from MemoryState
+    const schema = memoryState.getState('selectedSchema');
+    if (schema) {
+      setSelectedSchema(schema.name);
+    }
+  }, [memoryState.getState('selectedSchema')]);
 
   const handleComponentClick = (component: string) => {
     setSelectedComponent(component);
@@ -24,17 +33,14 @@ export default function Page() {
         return <p>SQL Placeholder</p>;
       case 'database':
         return <Schema_list />;
-      // Add more cases for other components
-      // case 'anotherComponent':
-      //   return <AnotherComponent />;
-      // case 'yetAnotherComponent':
-      //   return <YetAnotherComponent />;
+      case 'design':
+        return <Schema_render schemaName={selectedSchema} />;
       default:
         return <Schema_list />;
     }
   };
 
-  const buttonClass = (component: string) => 
+  const buttonClass = (component: string) =>
     `p-2 rounded ${selectedComponent === component ? 'bg-black text-white' : 'text-gray-700'}`;
 
   return (
@@ -59,10 +65,14 @@ export default function Page() {
           >
             <FaCode />
           </button>
-          {/* Add more buttons for other components */}
-          {/* <button className={buttonClass('anotherComponent')} onClick={() => handleComponentClick('anotherComponent')}>Another Component</button> */}
-          {/* <button className={buttonClass('yetAnotherComponent')} onClick={() => handleComponentClick('yetAnotherComponent')}>Yet Another Component</button> */}
+          <button
+            className={buttonClass('design')}
+            onClick={() => handleComponentClick('design')}
+          >
+            <SiMaterialdesignicons />
+          </button>
         </div>
+
         <div className='flex flex-1 w-full overflow-y-scroll'>
           {renderComponent()}
         </div>

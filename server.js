@@ -102,6 +102,125 @@ app.post('/getschemas', async (req, res) => {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+app.post('/getschema-details', async (req, res) => {
+  if (!sequelizeInstance) {
+    return res.status(400).send('Database connection not established.');
+  }
+
+  const { schemaName } = req.body; // The schema name should be provided in the request body
+
+  if (!schemaName) {
+    return res.status(400).send('Schema name is required.');
+  }
+
+  const query = `
+    WITH table_details AS (
+      SELECT
+        t.table_name,
+        t.table_schema,
+        c.column_name,
+        c.data_type,
+        c.is_nullable,
+        c.column_default,
+        c.ordinal_position,
+        CASE
+          WHEN EXISTS (
+            SELECT 1
+            FROM information_schema.table_constraints tc
+            JOIN information_schema.key_column_usage kcu
+            ON tc.constraint_name = kcu.constraint_name
+            WHERE tc.constraint_type = 'PRIMARY KEY'
+            AND kcu.table_name = t.table_name
+            AND kcu.column_name = c.column_name
+            AND kcu.table_schema = t.table_schema
+          ) THEN TRUE
+          ELSE FALSE
+        END AS is_primary_key
+      FROM information_schema.tables t
+      JOIN information_schema.columns c
+      ON t.table_name = c.table_name
+      AND t.table_schema = c.table_schema
+      WHERE t.table_schema = :schemaName
+    ),
+    foreign_keys AS (
+      SELECT
+        tc.table_name,
+        tc.table_schema,
+        kcu.column_name,
+        tc.constraint_name,
+        tc.constraint_type,
+        ccu.table_name AS foreign_table_name,
+        ccu.column_name AS foreign_column_name
+      FROM information_schema.table_constraints AS tc
+      JOIN information_schema.key_column_usage AS kcu
+      ON tc.constraint_name = kcu.constraint_name
+      JOIN information_schema.constraint_column_usage AS ccu
+      ON ccu.constraint_name = tc.constraint_name
+      WHERE tc.constraint_type = 'FOREIGN KEY'
+      AND tc.table_schema = :schemaName
+    )
+    SELECT
+      td.table_name,
+      td.column_name,
+      td.data_type,
+      td.is_nullable,
+      td.column_default,
+      td.ordinal_position,
+      td.is_primary_key,
+      fk.foreign_table_name,
+      fk.foreign_column_name
+    FROM table_details td
+    LEFT JOIN foreign_keys fk
+    ON td.table_name = fk.table_name
+    AND td.column_name = fk.column_name
+    AND td.table_schema = fk.table_schema
+    ORDER BY td.table_name, td.ordinal_position;
+  `;
+
+  try {
+    const results = await sequelizeInstance.query(query, {
+      replacements: { schemaName },
+      type: sequelizeInstance.QueryTypes.SELECT
+    });
+
+    // Organize results into a structured format
+    const tables = results.reduce((acc, row) => {
+      if (!acc[row.table_name]) {
+        acc[row.table_name] = {
+          columns: [],
+          foreign_keys: []
+        };
+      }
+
+      acc[row.table_name].columns.push({
+        column_name: row.column_name,
+        data_type: row.data_type,
+        is_nullable: row.is_nullable,
+        column_default: row.column_default,
+        is_primary_key: row.is_primary_key
+      });
+
+      if (row.foreign_table_name) {
+        acc[row.table_name].foreign_keys.push({
+          column_name: row.column_name,
+          foreign_table_name: row.foreign_table_name,
+          foreign_column_name: row.foreign_column_name
+        });
+      }
+
+      return acc;
+    }, {});
+
+    res.json(tables);
+  } catch (err) {
+    console.error('Unable to get schema details:', err);
+    res.status(500).json({ error: 'Unable to get schema details from the database', details: err.message });
+  }
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Define a route handler for getting all tables in the database
 app.post('/gettable', (req, res) => {
   if (!sequelizeInstance) {
